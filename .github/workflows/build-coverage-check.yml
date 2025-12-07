@@ -1,0 +1,45 @@
+name: Python Test Coverage
+
+on:
+  workflow_call:
+  workflow_dispatch:
+ 
+permissions:
+  contents: read
+
+jobs:
+  build-python-coverage:
+    name: Enforce Python Unit Test Coverage
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout sources
+      uses: actions/checkout@v3
+
+    - name: Setup project build variables
+      run: |
+        for i in `cat conf/buildvars.properties` ; do echo "$i" >> $GITHUB_ENV ; done
+
+    - name: Setup Python ${{ env.PYTHON_VERSION }} interpreter
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Setup Python dependency modules
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r ./conf/python/build.txt -r ./conf/python/runtime.txt
+
+    - name: Run Test Coverage
+      run: |
+        python -m nose2 --with-coverage --coverage-report xml -v -F -s ${{ env.UNIT_TEST_DIR }} -t .
+
+
+    - name: Ensure Global Coverage is above 90%
+      uses: zlatko-ms/pycovcheck@v2
+      with:
+        classes: :0.9
+        packages: :0.9
+    
+
+  

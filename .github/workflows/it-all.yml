@@ -1,0 +1,32 @@
+name: Integration Tests
+
+on:
+  workflow_call:
+  workflow_dispatch:
+ 
+permissions:
+  contents: read
+
+jobs:
+  
+  plain:
+    uses: ./.github/workflows/it-plain.yml
+
+  json:
+    uses: ./.github/workflows/it-json.yml
+
+  yaml:
+    uses: ./.github/workflows/it-yaml.yml
+
+  multi:
+    uses: ./.github/workflows/it-multiformat.yml
+
+  override:
+    uses: ./.github/workflows/it-override.yml
+
+  select:
+    uses: ./.github/workflows/it-select.yml
+
+  separator:
+    uses: ./.github/workflows/it-separator.yml
+  
